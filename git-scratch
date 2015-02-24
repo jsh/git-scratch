@@ -1,0 +1,66 @@
+#!/bin/bash -eu
+# create a scratch repo for experiments
+
+# checkout a branch,
+# make an easy-to-follow change
+checkout-and-mark() {
+  git checkout $1
+  echo "From branch $1" > README     # make a change that lets you see what branch it's in
+  git add .
+  git commit -m"commit in branch $1" # use a commit message that names the branch, too
+}
+
+# error out
+die() { echo "$@" >&2; exit 1; }
+
+make_basic_repo() {
+  git init
+  touch .gitkeep
+  git add .
+  git commit -m initial
+  git tag initial
+}
+
+parse_args() {
+  # now that we have a couple of args, let's parse with getopts
+
+  branched="" remoted=""	# don't take these from the environment
+  local usage="usage: $0 [-b] [-r] [dirname]"
+
+  while getopts br flag; do
+    case $flag in
+      b) branched=yes ;;
+      r) remoted=yes  ;;
+      ?) die $usage   ;;
+    esac
+  done
+  shift $(( OPTIND - 1 ));
+
+  dir=${1:-scratch}
+}
+
+parse_args "$@"
+
+# cleanliness is next to godliness
+rm -rf $dir
+mkdir $dir  # complain if $dir exists but no -f flag
+cd $_
+
+make_basic_repo
+
+# special sauce
+if [[ "$branched" ]]; then  # make the branches
+  git branch davidian
+  checkout-and-mark davidian
+  checkout-and-mark master  # end up in master
+fi
+
+if [[ "$remoted" ]]; then   # make a remote and two locals
+  cd ..
+  rm -rf /tmp/$dir.git
+  git clone --bare file://$PWD/$dir /tmp/$dir.git
+
+  rm -rf $dir $dir.clone
+  git clone ssh://localhost/tmp/$dir.git
+  git clone ssh://localhost/tmp/$dir.git $dir.clone
+fi
