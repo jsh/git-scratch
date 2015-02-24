@@ -9,14 +9,16 @@ Create a scratch repo to play with.
 
     git-scratch [-b] [-r] [dirname]
 
-Called with no args, the repo name is "scratch", so you can do this
-
-    $ git scratch; cd $_
-
 ## DESCRIPTION
 
+    Create a scratch repo for experimentation. Include the empty, hidden file .gitkeep .
+    
+    The default repo name is "scratch", so you can do this:
+
+        $ git scratch; cd $_
+    
     -b
-    branched. Make master and davidian branches, each with a unique commit
+        branched. Make master and davidian branches, each with a unique commit
 
     -r
-    remote. Make "remote" repo ssh://localhost/<dirname>.git and a pair of local clones, <dirname> and <dirname>.clone
+        remote. Make "remote" repo ssh://localhost/<dirname>.git and a pair of local clones, <dirname> and <dirname>.clone
