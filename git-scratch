@@ -42,7 +42,7 @@ parse_args() {
 parse_args "$@"
 
 # cleanliness is next to godliness
-rm -rf $dir
+rm -rf $dir{,.clone}
 mkdir $dir  # complain if $dir exists but no -f flag
 cd $_
 
@@ -60,7 +60,7 @@ if [[ "$remoted" ]]; then   # make a remote and two locals
   rm -rf /tmp/$dir.git
   git clone --bare file://$PWD/$dir /tmp/$dir.git
 
-  rm -rf $dir $dir.clone
+  rm -rf $dir{,.clone}
   git clone ssh://localhost/tmp/$dir.git
   git clone ssh://localhost/tmp/$dir.git $dir.clone
 fi
