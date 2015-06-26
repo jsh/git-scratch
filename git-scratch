@@ -5,7 +5,8 @@
 # make an easy-to-follow change
 checkout-and-mark() {
   git checkout $1
-  echo "From branch $1" > README     # make a change that lets you see what branch it's in
+  echo "From branch $1" > README.$1     # make a change that lets you see what branch it's in
+  [ "$conflict" ] && mv README.$1 README # make all changes to the same file
   git add .
   git commit -m"commit in branch $1" # use a commit message that names the branch, too
 }
@@ -24,14 +25,16 @@ make_basic_repo() {
 parse_args() {
   # now that we have a couple of args, let's parse with getopts
 
-  branched="" remoted=""	# don't take these from the environment
-  local usage="usage: $0 [-b] [-r] [dirname]"
+  branched="" conflict="" remoted="" # don't take these from the environment
+  local usage="usage: $0 [-b|-B] [-r] [dirname]"
+  legal_flags=bBr
 
-  while getopts br flag; do
+  while getopts $legal_flags flag; do
     case $flag in
       b) branched=yes ;;
+      B) branched=yes conflict=yes ;;
       r) remoted=yes  ;;
-      ?) die $usage   ;;
+      # ?) die $usage   ;;
     esac
   done
   shift $(( OPTIND - 1 ));
