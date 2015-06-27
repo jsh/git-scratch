@@ -1,0 +1,12 @@
+#!/bin/bash -eu
+
+# parse multiple args
+
+for i in rbB; do
+  for j in rbB; do
+    for k in rbB; do
+      git scratch -$i -$j -$k
+      git scratch -$i$j$k
+    done
+  done
+done

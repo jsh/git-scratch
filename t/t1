@@ -1,0 +1,6 @@
+#!/bin/bash -eu
+
+# idempotence
+
+git scratch
+git scratch

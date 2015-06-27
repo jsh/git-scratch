@@ -1,0 +1,7 @@
+#!/bin/bash -eu
+
+# make the directory name different
+
+git scratch scratch-too
+[ $(git -C scratch-too rev-parse --show-toplevel) = $PWD/scratch-too ]
+rm -rf scratch-too

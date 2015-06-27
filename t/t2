@@ -1,0 +1,11 @@
+#!/bin/bash -eu
+
+# parse each argument
+
+for i in {b,r,B}; do
+  git scratch -$i;
+  case $i in
+    b|B) [ $(git -C scratch branch -a | wc -l) == 2 ] ;;
+    r) [ -d /tmp/scratch.git ] && [ -d scratch ] && [ -d scratch.clone ] ;;
+  esac
+done

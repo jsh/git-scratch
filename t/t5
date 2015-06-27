@@ -1,0 +1,8 @@
+#!/bin/bash -eu
+
+# git scratch cleans up after itself
+
+git scratch -br scratch-too
+git scratch scratch-too
+[ $( git -C scratch-too branch -a | wc -l ) = 1 ]  && [ ! -d scratch-too.* ] && [ ! -d /tmp/scratch-too.git ]
+

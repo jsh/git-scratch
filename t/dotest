@@ -1,0 +1,11 @@
+#!/bin/bash -eu
+
+for i in "$@"; do
+	rm -rf scratch* /tmp/scratch*
+	echo == $i
+	if $i &> /dev/null ; then
+		echo SUCCESS
+	else
+		echo FAIL
+	fi
+done

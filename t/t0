@@ -1,0 +1,7 @@
+#!/bin/bash -eu
+
+# make a scratch repo
+
+[ -d scratch ] && rm -rf scratch
+git scratch
+[ $(git -C scratch rev-parse --show-toplevel) = $PWD/scratch ]
