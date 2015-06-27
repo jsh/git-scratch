@@ -9,3 +9,4 @@ for i in "$@"; do
 		echo FAIL
 	fi
 done
+rm -rf scratch* /tmp/scratch*
