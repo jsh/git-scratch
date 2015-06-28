@@ -1,0 +1,9 @@
+#!/bin/bash -eu
+
+# test option to fix every object in commit at constant value
+
+git scratch -f scratchA
+sleep 60
+git scratch -f scratchB
+
+diff -r --exclude=index scratch{A,B}

@@ -17,6 +17,10 @@ die() { echo "$@" >&2; exit 1; }
 make_basic_repo() {
   git init
   touch .gitkeep
+  if [ "$fixed" ]; then
+    git config user.name root
+    git config user.email root@localhost.localdomain
+  fi
   git add .
   git commit -m initial
   git tag initial
@@ -25,14 +29,19 @@ make_basic_repo() {
 parse_args() {
   # now that we have a couple of args, let's parse with getopts
 
-  branched="" conflict="" remoted="" # don't take these from the environment
-  local usage="usage: $0 [-b|-B] [-r] [dirname]"
-  legal_flags=bBr
+  branched="" conflict="" fixed="" remoted="" # don't take these from the environment
+  local usage="usage: $0 [-b|-B] [-f] [-r] [dirname]"
+  legal_flags=bBfr
 
   while getopts $legal_flags flag; do
     case $flag in
       b) branched=yes ;;
       B) branched=yes conflict=yes ;;
+      f) fixed=yes                      # fix times and committers constant at constant values
+         epoch="$(date --date='@0')"
+         export GIT_AUTHOR_DATE=$epoch
+         export GIT_COMMITTER_DATE=$epoch
+         ;;
       r) remoted=yes  ;;
       # ?) die $usage   ;;
     esac
