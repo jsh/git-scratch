@@ -1,0 +1,20 @@
+#!/bin/bash -eu
+
+# test -b and -B options for branching
+
+# -b has different files in different branches
+git scratch -b
+pushd scratch
+  ls > 1
+  git checkout davidian
+  ! ls | diff -q 1 -
+popd
+
+# -B has file differences between branches
+git scratch -B
+pushd scratch
+  git diff davidian | grep -q .
+  ls > 1
+  git checkout davidian
+  ls | diff -q 1 -
+popd
