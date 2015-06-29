@@ -38,9 +38,9 @@ parse_args() {
       b) branched=yes ;;
       B) branched=yes conflict=yes ;;
       f) fixed=yes                      # fix times and committers constant at constant values
-         epoch="$(date --date='@0')"
-         export GIT_AUTHOR_DATE=$epoch
-         export GIT_COMMITTER_DATE=$epoch
+         epoch="$(date -u --date='@0')"
+         export GIT_AUTHOR_DATE="$epoch"
+         export GIT_COMMITTER_DATE="$epoch"
          ;;
       r) remoted=yes  ;;
       # ?) die $usage   ;;
