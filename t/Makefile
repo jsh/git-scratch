@@ -2,4 +2,4 @@ SHELL := /bin/bash
 PATH := :..:$(PATH)
 
 test:
-	dotest t*
+	dotest s* a*
