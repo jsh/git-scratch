@@ -1,0 +1,11 @@
+#!/bin/bash -eu
+
+# basic functionality test for git-addfile
+
+git scratch; cd $_
+git addfile
+[ -x hello ]
+rm -rf hello
+git addfile hello
+[ -f hello ] && [ ! -x hello ]
+rm -rf hello
