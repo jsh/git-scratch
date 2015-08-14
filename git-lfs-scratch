@@ -1,0 +1,9 @@
+#!/bin/bash -eu
+
+git scratch -r
+cd scratch
+bigfiles="${1:-*.big}"
+git lfs track "$bigfiles"
+git add .gitattributes
+git commit -am"track files with the extension '$bigfiles'"
+git push
