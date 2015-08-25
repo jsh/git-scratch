@@ -1,26 +1,23 @@
 #!/bin/bash -eux
 
 # create a pair of repos
-for i in sub top;
+for i in sub scratch;
 do
-  git scratch -r $i
-  rm -rf $i.clone
-  cd $i
-  git addfile $i.txt
-  git push
-  cd -
+  git scratch -R $i
 done
 
-# make 'sub' a submodule of 'top'
-cd top
+# make 'sub' a submodule of 'scratch'
+cd scratch
 git submodule add ssh://localhost/tmp/sub.git sub
 git commit -am'a submodule'
 git push
 cd -
 
 # now clean up, and get a fresh copy
-rm -rf sub top
-git clone --recursive ssh://localhost/tmp/top.git
+rm -rf sub scratch
+git clone --recursive ssh://localhost/tmp/scratch.git
+
+exit 0
 
 # check out the master branch
 cd top
