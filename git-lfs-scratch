@@ -1,6 +1,6 @@
 #!/bin/bash -eu
 
-git scratch -r
+git scratch -R
 cd scratch
 bigfiles="${1:-*.big}"
 git lfs track "$bigfiles"
