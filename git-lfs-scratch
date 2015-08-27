@@ -6,7 +6,10 @@ git scratch; cd $_
 git lfs track "$bigfiles"
 git add .gitattributes
 git commit -am"files with extension '$bigfiles' are large"
-hub create
 git addfile hello hello.big
+hub create
+if git fetch && git branch -a | grep origin; then
+  git pull origin master
+fi
 git push -u origin master
 git lfs ls-files
