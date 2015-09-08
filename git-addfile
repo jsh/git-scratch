@@ -1,4 +1,4 @@
-#!/bin/bash -eu
+#!/bin/bash -eux
 
 git rev-parse --git-dir &> /dev/null
 if [[ $# -eq 0 ]]; then
@@ -12,9 +12,14 @@ else
     [ ${i:0:1} != '/' ] # relative paths & real files only
     name="$PWD/$i"
     rm -rf $name
-    install -d $(dirname $name)
-    echo "file $i" > $name
+    if [[ ${name: -1:1} = '/' ]]; then
+      install -d $name
+      > $name/.gitkeep
+    else
+      install -d $(dirname $name)
+      echo "file $i" > $name
+    fi
     git add "$name"
   done
-  git commit -m"create files $@" "$@"
+  git commit -m"create file(s) $@" "$@"
 fi
