@@ -18,10 +18,10 @@ Create a scratch repo to play with.
         $ git scratch; cd $_
 
     -b
-        branched. Make master and davidian branches
+        branched. Make master and davidian branches, each with unique files
 
     -B
-        branched. Make master and davidian branches, each with a unique commit
+        branched. Make master and davidian branches with conflicting commits
 
     -f
         set author and committer time to the epoch
