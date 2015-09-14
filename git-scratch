@@ -54,8 +54,9 @@ parse_args() {
 
 parse_args "$@"
 
+sync=tmp/$LOGNAME/$dir.git
 # cleanliness is next to godliness
-rm -rf $dir{,.clone} /tmp/$dir.git
+rm -rf $dir{,.clone} /$sync
 mkdir $dir  # complain if $dir exists but no -f flag
 cd $_
 
@@ -70,12 +71,10 @@ fi
 
 if [[ "$remoted" ]]; then   # make a remote and two locals
   cd ..
-  rm -rf /tmp/$dir.git
-  git clone --bare file://$PWD/$dir /tmp/$dir.git
+  git clone --bare file://$PWD/$dir /$sync
 
-  rm -rf $dir{,.clone}
-  git clone ssh://localhost/tmp/$dir.git
+  git clone ssh://localhost/$sync
   if [[ "$copy" ]]; then
-    git clone ssh://localhost/tmp/$dir.git $dir.clone
+    git clone ssh://localhost/$sync $dir.clone
   fi
 fi
