@@ -73,6 +73,7 @@ if [[ "$remoted" ]]; then   # make a remote and two locals
   cd ..
   git clone --bare file://$PWD/$dir /$sync
 
+  rm -rf $dir{,.clone}
   git clone ssh://localhost/$sync
   if [[ "$copy" ]]; then
     git clone ssh://localhost/$sync $dir.clone
