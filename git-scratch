@@ -54,9 +54,9 @@ parse_args() {
 
 parse_args "$@"
 
-sync=tmp/$LOGNAME/$dir.git
+sync=/tmp/$LOGNAME/$dir.git
 # cleanliness is next to godliness
-rm -rf $dir{,.clone} /$sync
+rm -rf $dir{,.clone} $sync
 mkdir $dir  # complain if $dir exists but no -f flag
 cd $_
 
@@ -71,7 +71,7 @@ fi
 
 if [[ "$remoted" ]]; then   # make a remote and two locals
   cd ..
-  git clone --bare file://$PWD/$dir /$sync
+  git clone --bare --no-hardlinks $dir $sync
 
   rm -rf $dir{,.clone}
   git clone ssh://localhost/$sync
