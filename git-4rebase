@@ -1,0 +1,20 @@
+#!/bin/bash -eux
+
+# create the initial repo
+git scratch 4rebase
+cd $_
+git addfile
+
+# branch here
+git branch davidian
+
+# radical change to master
+git rm hello
+git commit -m'cruel master' hello
+git addfile buzz-off
+
+# benign changes to branch
+git checkout davidian
+echo echo happy birthday, evi > hello
+./hello
+git commit -m'7 June 1940' hello
