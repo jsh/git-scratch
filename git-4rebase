@@ -1,20 +1,21 @@
-#!/bin/bash -eux
+#!/bin/bash -eu
 
 # create the initial repo
-git scratch 4rebase
+subcmd=${0##*-}
+git scratch ${1:-$subcmd}
 cd $_
 git addfile
 
 # branch here
-git branch davidian
+git checkout -b davidian
 
-# radical change to master
+# radical change to davidian
 git rm hello
-git commit -m'cruel master' hello
+git commit -m'unfriendly' hello
 git addfile buzz-off
 
-# benign changes to branch
-git checkout davidian
+# benign changes to master
+git checkout -
 echo echo happy birthday, evi > hello
 ./hello
 git commit -m'7 June 1940' hello

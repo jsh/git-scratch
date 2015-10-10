@@ -1,0 +1,46 @@
+#!/bin/bash -eu
+
+# create the initial repo
+subcmd=${0##*-}
+git scratch ${1:-$subcmd}
+cd $_
+git addfile README # will stay the same in both
+git addfile # will change in both
+for i in {1..10}; do echo line $i; done > numbers
+git add numbers
+git commit -m'file with several lines'
+
+# branch here
+git checkout -b davidian
+
+# peculiar changes
+echo 'I said not to!' > DO_NOT_README
+git rm hello
+git add --all
+git commit -m'unfriendly'
+
+{
+  echo line 1
+  printf "line "; echo 'sqrt(2)' | bc -l
+  echo line 2
+  printf "line "; echo 'e(1)' | bc -l
+  echo line 3
+  printf "line "; echo '4*a(1)' | bc -l
+  for i in {4..10}; do
+    echo line $i
+  done
+} > numbers
+git commit -m'more irrational changes' numbers
+
+# now back to the master
+git checkout -
+
+# benign changes
+for i in {0,1} 1.5 2 2.5 3 3.5 {4,5} 5.5 {6..11}; do
+  echo line $i
+done > numbers
+git commit -m'rational changes' numbers
+
+echo echo happy birthday, evi > hello
+./hello
+git commit -m'7 June 1940' hello
