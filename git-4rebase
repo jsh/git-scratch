@@ -1,5 +1,7 @@
 #!/bin/bash -eu
 
+exec >/dev/null
+
 # create the initial repo
 subcmd=${0##*-}
 git scratch ${1:-$subcmd}
@@ -7,7 +9,7 @@ cd $_
 git addfile
 
 # branch here
-git checkout -b davidian
+git checkout -qb davidian
 
 # radical change to davidian
 git rm hello
@@ -15,7 +17,10 @@ git commit -m'unfriendly' hello
 git addfile buzz-off
 
 # benign changes to master
-git checkout -
+git checkout -q -
 echo echo happy birthday, evi > hello
 ./hello
 git commit -m'7 June 1940' hello
+
+# prep for rebase
+git checkout -q -
