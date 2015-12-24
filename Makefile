@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-exes := $(shell echo git-{addfile,scratch})
+exes := $(shell echo git-{addfile,rev-num,scratch})
 
 test:
 	make -C t
