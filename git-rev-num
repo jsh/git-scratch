@@ -1,0 +1,18 @@
+#!/bin/bash -eu
+# SHA1 of numbered revision N
+# initial commit is revision 1
+# If number is -N, then counting is from latest revision
+
+die() { echo "$@" >&2; exit 1; }
+usage="usage: $0 [+|-]N"
+[[ $(uname -s) == Darwin ]] && tac() { tail -r; }
+
+# parse args
+[[ $1 =~ ^[+-]?[0-9][0-9]*$ ]] || die $usage
+n=${1/[+-]}
+
+# print the SHA1
+case $1 in
+	-*) git rev-list --all | sed -n ${n}p       ;;
+	*)  git rev-list --all | tac | sed -n ${n}p ;;
+esac
