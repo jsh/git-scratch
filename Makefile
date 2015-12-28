@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-exes := $(shell echo git-{addfile,rev-num,scratch})
+exes := $(wildcard git-*)
 
 test:
 	make -C t
