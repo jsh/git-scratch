@@ -1,3 +1,3 @@
 #!/bin/bash
 
-git log --oneline -- $1 | tail -1 | cut -f1 -d' ' # SHA1 of first commit with file $1
+git log --oneline -- master $1 | tail -1 | cut -f1 -d' ' # SHA1 of first commit with file $1
