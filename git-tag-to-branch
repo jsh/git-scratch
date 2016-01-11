@@ -1,0 +1,5 @@
+#!/bin/bash -eux
+# convert a tag to a branch, locally
+
+git checkout -b $1 $1^{tag}
+git tag -d $1
