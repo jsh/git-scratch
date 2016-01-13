@@ -1,7 +1,7 @@
 #!/bin/bash -eu
-# SHA1 of numbered revision N
+# SHA1 of numbered revision N from HEAD
 # initial commit is revision 1
-# If number is -N, then counting is from latest revision
+# If number is -N, then counting is from HEAD
 
 die() { echo "$@" >&2; exit 1; }
 usage="usage: $0 [+|-]N"
@@ -13,6 +13,6 @@ n=${1/[+-]}
 
 # print the SHA1
 case $1 in
-	-*) git rev-list --all | sed -n ${n}p       ;;
-	*)  git rev-list --all | tac | sed -n ${n}p ;;
+	-*) git rev-list HEAD | sed -n ${n}p       ;;
+	*)  git rev-list HEAD | tac | sed -n ${n}p ;;
 esac
