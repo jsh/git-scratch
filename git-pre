@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/bash -eu
 
-first=$(git log --oneline -- $1 | tail -1 | cut -f1 -d' ') # SHA1 of first commit with file $1
-git rev-parse $first^
+# commit immediately preceding the first commit of file $1
+
+git rev-parse $(git first $1)^
