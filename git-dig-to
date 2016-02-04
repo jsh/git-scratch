@@ -1,0 +1,24 @@
+#!/bin/bash -eux
+
+trap "cleanup" EXIT
+cleanup() {
+  set +e
+  git remote remove dig
+  git tag -d dig-it
+  set -e
+} 2>/dev/null
+
+die() { echo "$@" >&2; exit -1; }
+usage="usage: $0 <commit-ish>"
+[[ $# == 1 ]] || die $usage
+
+dig=../$(basename $PWD).dig
+cleanup
+
+rm -rf $dig
+git init $dig
+git remote add dig $dig
+
+git tag dig-it $1
+
+git push dig dig-it:master
