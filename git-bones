@@ -25,13 +25,13 @@ done
 
 tmp=/tmp/$$
 git cat-file --batch-check --batch-all-objects > $tmp
-# trap 'rm $tmp' EXIT
+trap 'rm $tmp' EXIT
 
 if [[ "$counts" ]]; then
-  [ "$commits" ] && commits=$(grep -c commit $tmp)
-  [ "$trees" ] && trees=$(grep -c tree $tmp)
-  [ "$blobs" ] && blobs=$(grep -c blob $tmp)
-  echo "$commits $trees $blobs"
+  [ "$commits" ] && printf "%8s" $(grep -c commit $tmp)
+  [ "$trees" ] && printf "%8s" $(grep -c tree $tmp)
+  [ "$blobs" ] && printf "%8s" $(grep -c blob $tmp)
+  echo
   exit 0
 fi
 
