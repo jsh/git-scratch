@@ -1,0 +1,89 @@
+[alias]
+	aliases = config --get-regexp 'alias.*' # Jonas Gorauskas
+	branchname = rev-parse --abbrev-ref HEAD # Rob Miller
+	caa     = commit --all --amend --reuse-message=HEAD --date=\"$(date)\" # Nicola Paolucci and Mike McQuaid
+	ec      = config --global -e # Phil Haack
+	empty-tree-sha1 = hash-object -t tree /dev/null # use with git diff --check, git scm wiki
+	git     = rev-parse --git-dir
+	hist    = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+	index   = ls-files --stage
+	lg      = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative  # git scm wiki
+	lol     = log --graph --decorate --oneline --all
+	lolr    = log --oneline --decorate --walk-reflogs
+	root    = rev-parse --show-toplevel
+	sdiff   = !git diff && git submodule foreach 'git diff' # git community book
+	serve   = !git daemon --reuseaddr --verbose  --base-path=. --export-all ./.git # git scm wiki
+	spush   = push --recurse-submodules=on-demand # git community book
+	supdate = submodule update --remote --merge # git community book
+	whatis  = show -s --pretty='tformat:%h (%s, %ad)' --date=short # Junio Hamano
+	whois   = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -" # Junio Hamano
+	lo = log --graph --decorate --oneline
+	bones = cat-file --batch-check --batch-all-objects
+[apply]
+	whitespace = fix
+[branch]
+	autosetuprebase = always
+[color]
+	ui = auto
+[core]
+	attributesfile = ~/.gitattributes
+	autocrlf = input
+	excludesfile = ~/.gitignore
+	safecrlf = true
+	whitespace = trailing-space,space-before-tab
+#	editor = atom --wait
+[credential]
+	helper = cache --timeout=3600
+	# helper = gnome-keyring
+[diff]
+	#tool = vimdiff
+	tool = kdiff3
+[diff "xml"]
+	textconv = xmllint --format --recover
+[fetch]
+	prune = 1
+#[filter "lfs"]
+#	clean = git lfs clean %f
+#	required = true
+#	smudge = git lfs smudge %f
+[gist]
+	browse = true
+[help]
+	autocorrect = 1
+[http]
+	sslfverify = false
+[include]
+	path = ~/.gitconfig-local
+#[lfs]
+#	url = "http://localhost:9999/tmp/scratch.git/info"
+[merge]
+	conflictstyle = diff3
+	prompt = false
+	tool = kdiff3
+[mergetool]
+	#prompt = false
+	#keepBackup = false
+	#keepTemporaries = false
+[pull]
+	rebase = true
+[push]
+	default=simple
+#[rerere]
+#	enabled = true
+[status]
+	submodulesummary = 1
+[tag]
+	sort = v:refname
+[versionsort]
+	prereleaseSuffix = -pre
+	prereleaseSuffix = -rc
+[user]
+	name = Jeffrey S. Haemer
+	email = jeffrey.haemer@gmail.com
+	signingkey = 5FD8D11C
+[filter "lfs"]
+	clean = git-lfs clean %f
+	smudge = git-lfs smudge %f
+	required = true
+[web]
+	browser = open
