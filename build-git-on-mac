@@ -1,0 +1,5 @@
+#!/bin/bash -eu
+# building Git on the Mac
+
+echo 'CFLAGS+= -I/usr/local/Cellar/openssl/1.0.2e_1/include' >> Makefile
+NO_GETTEXT=1 make
