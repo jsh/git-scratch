@@ -1,4 +1,4 @@
-#!/bin/bash -eux
+#!/bin/bash -eu
 # convert a tag to a branch, locally
 
 git checkout -b $1 $1

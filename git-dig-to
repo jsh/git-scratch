@@ -1,4 +1,4 @@
-#!/bin/bash -eux
+#!/bin/bash -eu
 
 trap "cleanup" EXIT
 cleanup() {
@@ -21,4 +21,4 @@ git remote add dig $dig
 
 git tag dig-it $1
 
-git push dig dig-it:master
+git push -q dig dig-it:master
