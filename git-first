@@ -5,7 +5,7 @@ usage="usage:$0 [--help] <filename>"
 
 [[ $1 == --help ]] && die $usage
 
-sha1=$(git log --oneline master -- $1 | tail -1 | cut -f1 -d' ') # SHA1 of first commit with file $1
+sha1=$(git log --oneline master {$1:+--follow} -- $1 | tail -1 | cut -f1 -d' ') # SHA1 of first commit with file $1
 if [ "${sha1}" ]; then
   echo $sha1
 else
