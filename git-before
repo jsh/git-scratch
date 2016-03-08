@@ -1,9 +1,24 @@
 #!/bin/bash
 
-b=$(basename $1)
-s=$(git show $(git first $1)^:git-${b/.c/.sh} 2> /tmp/err| wc -l)
-if (( s == 0 )); then
-  echo $b: $(cat /tmp/err) >&2
-else
-  echo $b: $s
+b=$(basename $1 .c)
+export first=$(git first $1)
+pre=$(git rev-parse --short $first^ 2>/dev/null)
+if ! [[ "$pre" ]]; then
+  list=$(git ls-tree --name-only $first | grep ".*$b.*")
+  echo $1: $first:$list
+  exit 0
 fi
+
+best=$(git ls-tree --name-only $pre | egrep "(^$b.*.sh|git-$b.sh|.*$b)")
+if [[ "$best" ]]; then
+  echo $1: $pre:$best
+  exit 0
+fi
+
+list=$(git ls-tree --name-only $pre | egrep ".*$b.*.sh")
+if [[ "$list" ]]; then
+  echo $1: $pre:$list
+  exit 0
+fi
+
+echo $1: $(git log --oneline -1 $first) >&2
