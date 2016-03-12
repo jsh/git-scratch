@@ -54,7 +54,10 @@ parse_args() {
 
 parse_args "$@"
 
-sync=/tmp/$LOGNAME/$dir.git
+sync=/tmp/$dir.git
+if [ "${GIT_SCRATCH_REMOTE_USERDIRS:-}" ]; then
+  sync=/tmp/$LOGNAME/$dir.git
+fi
 # cleanliness is next to godliness
 rm -rf $dir{,.clone} $sync
 mkdir $dir  # complain if $dir exists but no -f flag
@@ -74,8 +77,8 @@ if [[ "$remoted" ]]; then   # make a remote and two locals
   git clone --bare --no-hardlinks $dir $sync
 
   rm -rf $dir{,.clone}
-  git clone ssh://localhost/$sync
+  git clone ssh://localhost$sync
   if [[ "$copy" ]]; then
-    git clone ssh://localhost/$sync $dir.clone
+    git clone ssh://localhost$sync $dir.clone
   fi
 fi
