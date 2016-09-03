@@ -5,10 +5,10 @@
 # make an easy-to-follow change
 checkout-and-mark() {
   git checkout $1
-  echo "From branch $1" > README.$1     # make a change that lets you see what branch it's in
+  echo "From branch $1" > README.$1      # make a change that lets you see what branch it's in
   [ "$conflict" ] && mv README.$1 README # make all changes to the same file
   git add .
-  git commit -m"commit in branch $1" # use a commit message that names the branch, too
+  git commit -m"commit in branch $1"     # use a commit message that names the branch, too
 }
 
 # error out
@@ -22,7 +22,7 @@ make_basic_repo() {
     git config user.email root@localhost.localdomain
   fi
   git add .
-  git commit -m initial
+  git commit -m "First commit"
   git tag initial
 }
 
@@ -37,7 +37,7 @@ parse_args() {
     case $flag in
       b) branched=yes ;;
       B) branched=yes conflict=yes ;;
-      f) fixed=yes                      # fix times and committers constant at constant values
+      f) fixed=yes     # fix times and committers constant at constant values
          epoch="$(date -u --date='@0')"
          export GIT_AUTHOR_DATE="$epoch"
          export GIT_COMMITTER_DATE="$epoch"
@@ -59,7 +59,7 @@ if [ "${GIT_SCRATCH_REMOTE_USERDIRS:-}" ]; then
   sync=/tmp/$LOGNAME/$dir.git
 fi
 # cleanliness is next to godliness
-rm -rf $dir{,.clone} $sync
+rm -rf $dir* $sync
 mkdir $dir  # complain if $dir exists but no -f flag
 cd $_
 
@@ -72,13 +72,19 @@ if [[ "$branched" ]]; then  # make the branches
   checkout-and-mark master  # end up in master
 fi
 
-if [[ "$remoted" ]]; then   # make a remote and two locals
+if [[ "$remoted" ]]; then   # make a remote
   cd ..
   git clone --bare --no-hardlinks $dir $sync
 
-  rm -rf $dir{,.clone}
-  git clone ssh://localhost$sync
-  if [[ "$copy" ]]; then
-    git clone ssh://localhost$sync $dir.clone
+  rm -rf $dir*             # remove the original
+
+  if [[ ! "$copy" ]]; then           # a single clone of the remote
+    git clone ssh://localhost$sync 
+  else                               # a pair of clones
+    for i in max moritz; do
+      git clone ssh://localhost$sync $dir.$i
+      git -C $dir.$i config user.name "${i^} Busch"
+      git -C $dir.$i config user.email "$i@localhost"
+    done
   fi
 fi
