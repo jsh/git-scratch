@@ -1,5 +1,0 @@
-#!/bin/bash -eu
-
-# commit immediately preceding the first commit of file $1
-
-git rev-parse $(git first $1)^
