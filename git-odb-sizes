@@ -66,3 +66,5 @@ for i in $week_nums; do
   printf "[ $i weeks ago ] "                                # report the size of the boneyard
   measure $boneyard
 done
+
+warn [ $(timestamp) ] all done                            # debugging timing info
