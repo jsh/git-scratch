@@ -1,0 +1,41 @@
+#!/bin/bash -eu
+
+week_nums="$@"
+dig=$PWD/source.git
+
+# tag the points we want to measure
+set_pitons() {
+  cd source
+    for i in $week_nums; do
+      git tag piton/$i $(git log -1 --before="$i weeks ago" | perl -lane 'print if s/^commit //')
+    done
+  cd ~-
+}
+
+# clean out the old dig
+cleanup() {
+  set +e
+  rm -rf $dig
+  set -e
+} 2>/dev/null
+trap "cleanup" EXIT
+
+# report whatever measure we're using
+measure() {
+  du -sh $1/objects
+}
+
+set_pitons
+exit 0
+
+# now for the real work
+for i in $week_nums; do
+  cleanup
+  git init --bare $dig                         # make a new dig
+  cd source
+    git remote add dig $dig            # use it as the remote
+    git push -q dig piton/$i:master    # make a version of the raw repo up to the piton
+  cd ~-
+  printf "$i weeks ago: "                      # report its size
+  measure $dig
+done
