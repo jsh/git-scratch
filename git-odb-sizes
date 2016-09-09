@@ -1,39 +1,59 @@
 #!/bin/bash -eu
 
-week_nums="$@"
-dig=$PWD/source.git
-git -C source remote set-url dig $dig            # use it as the remote
-
-# tag the points we want to measure
-set_pitons() {
-  cd source
-    for i in $week_nums; do
-      piton_sha1=$(git log -1 --before="$i weeks ago" | perl -lane 'print if s/^commit //')
-      [[ "$piton_sha1" ]] && git tag -f piton/$i $piton_sha1
-    done
-  cd ~-
-}
-
-# clean out the old dig
+# cleanliness is next to godliness
 cleanup() {
   set +e
   rm -rf $dig
   set -e
 } 2>/dev/null
-trap "cleanup" EXIT
+#trap "cleanup" EXIT
+
+die() { echo "$@" >&2; exit -1; }
+
+# the usual cmdline arg stuff
+handle_args() {
+  usage="usage: $0 week# [week# ...]"        # e.g., "git odb-size {300..315}"
+  week_nums="$*"
+  [[ "$week_nums" ]] || die $usage
+}
+
+# start with a clean slate
+initialize() {
+  cd source
+    git tag -d $(git tag -l piton*)        # remove all old tags
+    git remote set-url dig $dig            # use $dig as the remote
+  cd ~-
+  rm -rf $dig                              # remove the old $dig
+}
 
 # report whatever measure we're using
 measure() {
-  du -sh $1/objects
+  # du -sh $1/objects
+  git -C $1 count-objects -v | grep -F -- -pack: | perl -pe 's/\n/ /'  # use git count-objects for now
+  echo                                                                 # force a newline
 }
 
-set_pitons
+# tag the points in time we want to measure
+set_pitons() {
+  cd source
+    for i in $*; do
+      piton_sha1=$(git log -1 --before="$i weeks ago" | perl -lane 'print if s/^commit //') # last commit before $i weeks ago
+      [[ "$piton_sha1" ]] && git tag -f piton/$i $piton_sha1                                # stake down a name
+    done
+  cd ~-
+}
+
+# all the preliminaries
+dig=$PWD/source.git
+handle_args "$@"
+initialize
+set_pitons $week_nums
 
 # now for the real work
 for i in $week_nums; do
   cleanup
   git init --quiet --bare $dig                         # make a new dig
-  git -C source push -q dig piton/$i:master    # make a version of the raw repo up to the piton
-  printf "$i weeks ago: "                      # report its size
+  git -C source push -q dig piton/$i:master            # make a bare repo only up to the piton
+  printf "[ $i weeks ago ] "                           # report its size
   measure $dig
 done
