@@ -3,10 +3,10 @@
 # cleanliness is next to godliness
 cleanup() {
   set +e
-  rm -rf $dig
+  rm -rf $boneyard
   set -e
 } 2>/dev/null
-#trap "cleanup" EXIT
+#trap "cleanup" EXIT                         # when it's really cooked, we can turn this on
 
 die() { echo "$@" >&2; exit -1; }
 
@@ -14,16 +14,20 @@ die() { echo "$@" >&2; exit -1; }
 handle_args() {
   usage="usage: $0 week# [week# ...]"        # e.g., "git odb-size {300..315}"
   week_nums="$*"
-  [[ "$week_nums" ]] || die $usage
+  [[ "$week_nums" ]] || die $usage           # require an argument, don't default
 }
 
 # start with a clean slate
 initialize() {
-  cd source
-    git tag -d $(git tag -l piton*)        # remove all old tags
-    git remote set-url dig $dig            # use $dig as the remote
+  cd $dig
+    git tag -d $(git tag -l piton*) &>/dev/null    # remove all old tags
+    if git remote -v | grep -q boneyard; then      # hackaround for bad "git remote" design decision
+      git remote set-url boneyard $boneyard        # change old setting for remote
+    else
+      git remote add boneyard $boneyard            # use $boneyard as the remote
+    fi
   cd ~-
-  rm -rf $dig                              # remove the old $dig
+  rm -rf $boneyard                                 # remove the old $boneyard
 }
 
 # report whatever measure we're using
@@ -33,18 +37,19 @@ measure() {
   echo                                                                 # force a newline
 }
 
-# tag the points in time we want to measure
+# name the points in time we want to measure
 set_pitons() {
-  cd source
+  cd $dig
     for i in $*; do
       piton_sha1=$(git log -1 --before="$i weeks ago" | perl -lane 'print if s/^commit //') # last commit before $i weeks ago
-      [[ "$piton_sha1" ]] && git tag -f piton/$i $piton_sha1                                # stake down a name
+      [[ "$piton_sha1" ]] && git tag -f piton/$i $piton_sha1                                # stake down a name, like "piton/100" for 100 weeks ago
     done
   cd ~-
 }
 
 # all the preliminaries
-dig=$PWD/source.git
+: ${dig:=~/Digs/source}                                     # default to analyzing the "source" repo
+boneyard=$dig.git                                           # should be in /tmp. Here for debugging.
 handle_args "$@"
 initialize
 set_pitons $week_nums
@@ -52,8 +57,8 @@ set_pitons $week_nums
 # now for the real work
 for i in $week_nums; do
   cleanup
-  git init --quiet --bare $dig                         # make a new dig
-  git -C source push -q dig piton/$i:master            # make a bare repo only up to the piton
-  printf "[ $i weeks ago ] "                           # report its size
-  measure $dig
+  git init --quiet --bare $boneyard                         # make a new boneyard
+  git -C $dig push -q boneyard piton/$i:master              # fill it only up to the piton
+  printf "[ $i weeks ago ] "                                # report the size of the boneyard
+  measure $boneyard
 done
