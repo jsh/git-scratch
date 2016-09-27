@@ -23,6 +23,7 @@ else
     fi
     git add .
   done
-  git commit -m"create file(s) $@"
+  comment="add file(s) $@"
+  git commit -m"$comment"
 fi
 [[ "${OPTARG:-}" ]] && git tag $OPTARG
