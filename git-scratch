@@ -22,7 +22,7 @@ make_basic_repo() {
     git config user.email root@localhost.localdomain
   fi
   git add .
-  git commit -m "First commit"
+  git commit -m "Initial commit"
   git tag initial
 }
 
@@ -81,10 +81,11 @@ if [[ "$remoted" ]]; then   # make a remote
   if [[ ! "$copy" ]]; then           # a single clone of the remote
     git clone ssh://localhost$sync 
   else                               # a pair of clones
-    for i in max moritz; do
+    for i in itchy scratchy; do
       git clone ssh://localhost$sync $dir.$i
-      git -C $dir.$i config user.name "${i^} Busch"
       git -C $dir.$i config user.email "$i@localhost"
     done
+    git -C $dir.itchy config user.name "Itchy Mouse"
+    git -C $dir.scratchy config user.name "Scratchy Cat"
   fi
 fi
