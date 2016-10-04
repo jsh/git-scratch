@@ -26,4 +26,6 @@ else
   comment="add file(s) $@"
   git commit -m"$comment"
 fi
-[[ "${OPTARG:-}" ]] && git tag $OPTARG
+if [[ "${OPTARG:-}" ]]; then
+  git tag $OPTARG
+fi
