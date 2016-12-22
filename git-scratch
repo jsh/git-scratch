@@ -76,16 +76,16 @@ if [[ "$remoted" ]]; then   # make a remote
   cd ..
   git clone --bare --no-hardlinks $dir $sync
 
-  rm -rf $dir*             # remove the original
+  rm -rf $dir* itchy scratchy        # remove the original
 
   if [[ ! "$copy" ]]; then           # a single clone of the remote
     git clone ssh://localhost$sync 
   else                               # a pair of clones
     for i in itchy scratchy; do
-      git clone ssh://localhost$sync $dir.$i
-      git -C $dir.$i config user.email "$i@localhost"
+      git clone ssh://localhost$sync $i
+      git -C $i config user.email "$i@localhost"
     done
-    git -C $dir.itchy config user.name "Itchy Mouse"
-    git -C $dir.scratchy config user.name "Scratchy Cat"
+    git -C itchy config user.name "Itchy Mouse"
+    git -C scratchy config user.name "Scratchy Cat"
   fi
 fi
