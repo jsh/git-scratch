@@ -1,8 +1,6 @@
 #!/bin/bash -eu
 
-mkdir -p ${git_hook_output:=/tmp/git-hook-output/}
-{
-  sleep 1   # to make all hooks write at different times
-  printf "[ %s ] %s\n" $(date +%T) $PWD
-  echo $0 "$@"
-} &> $git_hook_output/$(basename $0).out
+git_watch_hooks_output=/tmp/git-watch-hooks.out
+
+cmd="$0 $@"
+printf "%s$ %s [ %s ]\n" $PWD "$cmd" $(date +%T) >> $git_watch_hooks_output 2>&1

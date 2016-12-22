@@ -11,7 +11,7 @@ sample-hook() {
 }
 
 install-hooks() {
-  cd $1/.git/hooks/
+  cd $1/hooks
   rm *.sample             # remove all samples
   for i in $(hook-list)
   do
@@ -24,5 +24,5 @@ rm -rf /tmp/git-hook-output          # place to put hook output
 git scratch $@
 hook=$(sample-hook)
 remote=/tmp/scratch.git
-install-hooks scratch*
+install-hooks scratch*/.git
 [[ -d $remote ]] && install-hooks $remote
