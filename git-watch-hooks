@@ -1,0 +1,28 @@
+#!/bin/bash -eu
+
+hook-list() {
+  git help hooks |
+    col -b |
+    perl -lane 'print if s/^   (\S)/\1/'  | sort # documented hooks
+}
+
+sample-hook() {
+  echo $0.template
+}
+
+install-hooks() {
+  cd $1/.git/hooks/
+  rm *.sample             # remove all samples
+  for i in $(hook-list)
+  do
+    ln $hook $i
+  done
+  cd ~-
+}
+
+rm -rf /tmp/git-hook-output          # place to put hook output
+git scratch $@
+hook=$(sample-hook)
+remote=/tmp/scratch.git
+install-hooks scratch*
+[[ -d $remote ]] && install-hooks $remote
