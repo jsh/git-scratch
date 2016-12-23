@@ -1,6 +1,8 @@
 #!/bin/bash -eu
 
-git_watch_hooks_output=/tmp/git-watch-hooks.out
+git_watch_hooks_log=/tmp/git-watch-hooks.log
 
-cmd="$0 $@"
-printf "%s$ %s [ %s ]\n" $PWD "$cmd" $(date +%T) >> $git_watch_hooks_output 2>&1
+cmd="$0 $@"   # command and args
+
+# e.g., 
+printf "%s$ %s [ %s ]\n" $PWD "$cmd" $(date +%T) >> $git_watch_hooks_log 2>&1

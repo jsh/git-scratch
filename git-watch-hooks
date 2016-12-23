@@ -1,28 +1,32 @@
 #!/bin/bash -eu
 
+# all hooks in documentation
 hook-list() {
   git help hooks |
     col -b |
-    perl -lane 'print if s/^   (\S)/\1/'  | sort # documented hooks
+    perl -lane 'print if s/^   (\S)/\1/'  | sort
 }
 
-sample-hook() {
-  echo $0.template
-}
-
+# replace default samples with ours
 install-hooks() {
   cd $1/hooks
-  rm *.sample             # remove all samples
-  for i in $(hook-list)
+  rm *.sample                              # remove default samples
+
+  our_hook=$(sample-hook)
+  for i in $(hook-list)                    # put in ours
   do
-    ln $hook $i
+    ln $our_hook $i
   done
   cd ~-
 }
 
-rm -rf /tmp/git-hook-output          # place to put hook output
-git scratch $@
-hook=$(sample-hook)
+# where's the sample?
+sample-hook() {
+  echo $0.template
+}
+
+rm -rf /tmp/git-watch-hooks.log
+git scratch $@                             # make a playground
 remote=/tmp/scratch.git
-install-hooks scratch*/.git
-[[ -d $remote ]] && install-hooks $remote
+install-hooks scratch*/.git                # install in client
+[[ -d $remote ]] && install-hooks $remote  # install in server, if needed
