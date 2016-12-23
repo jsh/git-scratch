@@ -6,3 +6,4 @@ cmd="$0 $@"   # command and args
 
 # e.g., 
 printf "%s$ %s [ %s ]\n" $PWD "$cmd" $(date +%T) >> $git_watch_hooks_log 2>&1
+cat >> $git_watch_hooks_log 2>&1
