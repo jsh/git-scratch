@@ -59,7 +59,7 @@ if [ "${GIT_SCRATCH_REMOTE_USERDIRS:-}" ]; then
   sync=/tmp/$LOGNAME/$dir.git
 fi
 # cleanliness is next to godliness
-rm -rf $dir* $sync
+rm -rf $dir $sync
 mkdir $dir  # complain if $dir exists but no -f flag
 cd $_
 
@@ -76,7 +76,7 @@ if [[ "$remoted" ]]; then   # make a remote
   cd ..
   git clone --bare --no-hardlinks $dir $sync
 
-  rm -rf $dir* itchy scratchy        # remove the original
+  rm -rf $dir itchy scratchy        # remove the original
 
   if [[ ! "$copy" ]]; then           # a single clone of the remote
     git clone ssh://localhost$sync 
