@@ -33,6 +33,6 @@ Create a scratch repo to play with.
         remote. Make "remote" repo ssh://localhost/<dirname>.git
         
 
-# Added by Mahesh for testing
+Added by Mahesh for testing
 
-# Second line added by Mahesh.
+Second line added by Mahesh.
