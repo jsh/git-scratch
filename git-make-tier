@@ -1,0 +1,11 @@
+#!/bin/bash -eu 
+
+origin=scratch.git
+tier=scratch-tier.git
+rm -rf $tier
+! [[ -e $tier ]] # make sure it's gone
+git clone --bare --single-branch file://$PWD/$origin $tier
+cd $tier
+git config remote.origin.tagOpt --no-tags # tags are not all copied
+git branch -m master-copy                 # reminder not to use it
+git config remote.origin.fetch +refs/heads/master:refs/heads/master-copy

@@ -1,0 +1,8 @@
+#!/bin/bash -eu
+
+archive=scratch-tier.git
+
+while read branch; do
+    git -C $archive fetch origin refs/heads/$branch:refs/heads/$branch
+    git -C $archive push --delete origin $branch
+done
