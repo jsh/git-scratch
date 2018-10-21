@@ -18,6 +18,7 @@ list_objects() {
 }
 
 
+cd $(git rev-parse --git-dir)
 objects="$PWD/objects"
 
 cd $objects
