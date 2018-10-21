@@ -5,7 +5,7 @@
 
 shopt -s nullglob extglob
 
-loose_objects() {
+list_objects() {
 	# packed objects
 	for p in pack/pack-*([0-9a-f]).idx ; do
 	    git show-index < $p | cut -f 2 -d ' '
@@ -17,21 +17,15 @@ loose_objects() {
 	done
 }
 
+
+objects="$PWD/objects"
+
+cd $objects
+list_objects
+
 # incoming objects
-
-{
-
-cd "$(git rev-parse --git-path objects)"
-
-loose_objects
-
 if [[ "${1:-}" = "-i" ]]; then
-	incoming="incoming*"
-	if [[ -d "$incoming" ]]; then
-		cd $incoming
-		loose_objects
-		ls -l pack
-	fi
+	for i in incoming*; do
+	    [[ -d $i ]] && (cd $i; list_objects)
+	done
 fi
-
-} | sort -u
