@@ -1,21 +1,37 @@
 #!/bin/bash -e
 # Aristotle Pagaltzis's 
 # https://stackoverflow.com/a/38083908 piped through sort
+# optionally shows incoming objects
 
 shopt -s nullglob extglob
 
+loose_objects() {
+	# packed objects
+	for p in pack/pack-*([0-9a-f]).idx ; do
+	    git show-index < $p | cut -f 2 -d ' '
+	done
+
+	# loose objects
+	for o in [0-9a-f][0-9a-f]/*([0-9a-f]) ; do
+	    echo ${o/\/}
+	done
+}
+
+# incoming objects
+
 {
 
-cd "`git rev-parse --git-path objects`"
+cd "$(git rev-parse --git-path objects)"
 
-# packed objects
-for p in pack/pack-*([0-9a-f]).idx ; do
-    git show-index < $p | cut -f 2 -d ' '
-done
+loose_objects
 
-# loose objects
-for o in [0-9a-f][0-9a-f]/*([0-9a-f]) ; do
-    echo ${o/\/}
-done
+if [[ "${1:-}" = "-i" ]]; then
+	incoming="incoming*"
+	if [[ -d "$incoming" ]]; then
+		cd $incoming
+		loose_objects
+		ls -l pack
+	fi
+fi
 
 } | sort -u
