@@ -2,71 +2,75 @@
 
 die() { echo "$*"; exit 1; } >&2
 
-parse_args() {
-	# process optional args
-	# -h: help
-	# -t tagname: name to tag the commit
-	usage="git addfile [-t tagname | -h] [file-or-dir ...]"
-	while getopts ":ht:" opt; do
-		case $opt in          
-			h) echo "usage: $usage" ; exit 0 ;;
-			t) tag=$OPTARG; shift 2;;
-			\?) echo "Invalid option: -$OPTARG" >&2; die "$usage" ;;
-			:) die "Option -$OPTARG requires an argument." >&2 ;;
-		esac
-	done
+parse-args() {
+    # Process optional args
+    #
+    # -h: help
+    # -t tagname: name to tag the commit
+	# bash lacks good arg parsing
+    usage="git addfile [-t tagname | -h] [file-or-dir ...]"
+    while getopts ":ht:" opt; do
+        case $opt in          
+            h) echo "usage: $usage" ; exit 0 ;;
+            t) tag=$OPTARG; shift 2;;
+            \?) echo "Invalid option: -$OPTARG" >&2; die "$usage" ;;
+            :) die "Option -$OPTARG requires an argument." >&2 ;;
+        esac
+    done
 }
 
-add_and_commit() {
-	# Add and commit everything new or changed in this directory,
+add-and-commit() {
+    # Add and commit everything new or changed in this directory
+    #
     # Normally, these are separate steps,
-	# here, we're just cramming stuff in.
-    git add .               	# add everything
-    git commit -m"$@"       	# commit it
-	if [[ "${tag:-}" ]]; then	# tag if requested
-	  git tag $tag
-	fi
+    # here, we're just cramming stuff in.
+    git add .                   # add everything
+    git commit -m"$@"           # commit it
+    if [[ "${tag:-}" ]]; then   # tag if requested
+      git tag $tag
+    fi
 }
 
-sanity_checks() {
-	# Does it make sense to run this script?
-	git rev-parse --git-dir &> /dev/null # in a git repo?
+sanity-checks() {
+    # Does it make sense to run this script?
+    git rev-parse --git-dir &> /dev/null # in a git repo?
 }
 
-default_behavior() {
-	# If there are no args, just create "hello, world" script
+add-canonical-program() {
+    # The classic, hello, world as a shell script
     echo 'echo hello, world' > hello        # create the program
     chmod +x hello                          # make it executable
     diff - <(./hello) <<< "hello, world"    # test it
-    add_and_commit "the canonical program"  # commit it
+    add-and-commit "the canonical program"  # commit it
     git add .                               # add it
     git commit -m"the canonical program"    # commit it
 }
 
-create_file_or_directory() {
-    [ ${name:0:1} == '/' ] &&
-    	die "relative paths only"	             # relative paths only
-    name="$PWD/$name"    	                     # make absolute paths
+create-file-or-directory() {
+    # Create a named file
+    [ ${name:0:1} == '/' ] &&                    # first character is a '/'? (`addfile /foo`)
+        die "relative paths only"                # only allow relative paths
+    name="$PWD/$name"                            # convert to absolute paths
     [-e "$name"] && die "$name already exists"   # tread not on what's there
-    if [[ ${name: -1:1} = '/' ]]; then           # addfile "foo/"
+    if [[ ${name: -1:1} = '/' ]]; then           # last character is a '/'? (`addfile foo/`)
       install -d $name                           # add empty directory
       > $name/.gitkeep                           # empty hidden file because
                                                  # git ignores empty dirs
-    else                                         # addfile "foo/bar"
+    else                                         # `addfile foo/bar`
       install -d $(dirname $name)                # create file in directory
       echo "entry $name" > $name                 # real contents
     fi
 }
 
-sanity_checks
-parse_args "$@"
+sanity-checks
+parse-args "$@"
 
 if [[ $# -eq 0 ]]; then
-	default_behavior	# we're done
-	exit 0              
+    add-canonical-program    # we're done!
+    exit 0              
 fi
 
 for name in "$@"; do    # create each name on command line
-	create_file_or_directory $name
+    create-file-or-directory $name
 done
-add_and_commit "add elements(s) $@"            # add & commit all
+add-and-commit "add elements(s) $@"            # add & commit all
